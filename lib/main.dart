@@ -83,13 +83,12 @@ class MyApp extends ConsumerWidget {
             ),
           ),
           debugShowCheckedModeBanner: false,
-          title: 'Iron Ready',
+          title: 'Flutter Hub',
           themeMode: themeMode,
           onGenerateRoute: AppRouter.generateRoute,
-          initialRoute:
-              hasSession
-                  ? RouteName.bottomNavbarnRoute
-                  : RouteName.signinScreenRoute,
+          initialRoute: hasSession
+              ? RouteName.bottomNavbarnRoute
+              : RouteName.signinScreenRoute,
         );
       },
     );
