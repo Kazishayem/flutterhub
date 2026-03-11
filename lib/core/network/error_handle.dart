@@ -1,46 +1,64 @@
-// ignore_for_file: avoid_print
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 
 class ErrorHandle {
- static void handleDioError(DioException e) {
-  print("Error Type: ${e.type}");
-  switch (e.type) {
-    case DioExceptionType.badCertificate:
-      print("badCertificate: ${e.message}");
-      throw Exception("Bad certificate error: ${e.message}");
-    case DioExceptionType.badResponse:
-      print("badResponse: ${e.message}");
-      if (e.response != null) {
-        print("Status Code: ${e.response?.statusCode}");
-        print("Response Data: ${e.response?.data}");
-      }
-      throw Exception("${e.response?.data['message']['message']}");
-    case DioExceptionType.cancel:
-      print("Request cancelled: ${e.message}");
-      throw Exception("Request was cancelled: ${e.message}");
-    case DioExceptionType.connectionError:
-      print("Connection error: ${e.message}");
-      throw Exception("Connection error: ${e.message}");
-    case DioExceptionType.connectionTimeout:
-      print("Connection Timeout: ${e.message}");
-      print("Request URL: ${e.requestOptions.uri}");
-      throw Exception("Connection timeout error: ${e.message}");
-    case DioExceptionType.receiveTimeout:
-      print("Receive Timeout: ${e.message}");
-      print("Request URL: ${e.requestOptions.uri}");
-      throw Exception("Receive timeout error: ${e.message}");
-    case DioExceptionType.sendTimeout:
-      print("Send Timeout: ${e.message}");
-      print("Request URL: ${e.requestOptions.uri}");
-      throw Exception("Send timeout error: ${e.message}");
-    case DioExceptionType.unknown:
-      print("Unknown error: ${e.message}");
-      if (e.error != null) {
-        print("Error: ${e.error}");
-      }
-      throw Exception("Unknown error: ${e.message}");
+  static Never handleDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionError:
+        throw Exception(
+          'No internet connection. Please check your network and try again.',
+        );
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.sendTimeout:
+        throw Exception(
+          'The server is taking too long to respond. Please try again.',
+        );
+      case DioExceptionType.badResponse:
+        final message = _extractServerMessage(e);
+        throw Exception(message);
+      case DioExceptionType.badCertificate:
+        throw Exception('Secure connection failed. Please try again later.');
+      case DioExceptionType.cancel:
+        throw Exception('Request was cancelled. Please retry.');
+      case DioExceptionType.unknown:
+        if (e.error is SocketException) {
+          throw Exception(
+            'No internet connection. Please check your network and try again.',
+          );
+        }
+        throw Exception('Something went wrong. Please try again.');
+    }
   }
-}
 
+  static String _extractServerMessage(DioException e) {
+    final data = e.response?.data;
+
+    if (data is Map<String, dynamic>) {
+      final directMessage = data['message'];
+      if (directMessage is String && directMessage.trim().isNotEmpty) {
+        return directMessage;
+      }
+
+      if (directMessage is Map<String, dynamic>) {
+        final nestedMessage = directMessage['message'];
+        if (nestedMessage is String && nestedMessage.trim().isNotEmpty) {
+          return nestedMessage;
+        }
+      }
+
+      final errorMessage = data['error'];
+      if (errorMessage is String && errorMessage.trim().isNotEmpty) {
+        return errorMessage;
+      }
+    }
+
+    final statusCode = e.response?.statusCode;
+    if (statusCode != null) {
+      return 'Request failed (status $statusCode). Please try again.';
+    }
+
+    return 'Request failed. Please try again.';
+  }
 }
