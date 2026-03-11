@@ -1,37 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterhub/core/resource/constansts/color_manger.dart';
 import 'package:flutterhub/core/resource/style_manager.dart';
 import 'package:flutterhub/core/resource/utils.dart';
 import 'package:flutterhub/core/route/route_name.dart';
-import 'package:flutterhub/data/repositories/auth_repository.dart';
-import 'package:flutterhub/data/sources/remote/auth_api_service.dart';
+import 'package:flutterhub/presentation/auth/viewmodel/signin_viewmodel.dart';
 import 'package:flutterhub/presentation/common%20widget/custom_text_feld.dart';
 import 'package:flutterhub/presentation/common%20widget/primary_button.dart';
 
-import '../../../core/network/api_clients.dart';
-
-class SigninScreen extends StatefulWidget {
+class SigninScreen extends ConsumerStatefulWidget {
   const SigninScreen({super.key});
 
   @override
-  State<SigninScreen> createState() => _SigninScreenState();
+  ConsumerState<SigninScreen> createState() => _SigninScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SigninScreenState extends ConsumerState<SigninScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  late final AuthRepository _authRepository;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _authRepository = AuthRepository(
-      remoteSource: AuthApiService(apiClient: ApiClient()),
-    );
-  }
 
   @override
   void dispose() {
@@ -49,12 +36,11 @@ class _SigninScreenState extends State<SigninScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    final authRepository = ref.read(authRepositoryProvider);
+    ref.read(signinLoadingProvider.notifier).state = true;
 
     try {
-      final isSuccess = await _authRepository.login(
+      final isSuccess = await authRepository.login(
         username: username,
         password: password,
       );
@@ -82,15 +68,15 @@ class _SigninScreenState extends State<SigninScreen> {
       );
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        ref.read(signinLoadingProvider.notifier).state = false;
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(signinLoadingProvider);
+
     return Scaffold(
       backgroundColor: ColorManager.whiteColor,
       body: SafeArea(
@@ -147,9 +133,9 @@ class _SigninScreenState extends State<SigninScreen> {
                 SizedBox(height: 30.h),
                 PrimaryButton(
                   backgroundColor: ColorManager.textRedColor,
-                  title: _isLoading ? 'Logging in...' : 'Login',
+                  title: isLoading ? 'Logging in...' : 'Login',
                   textColor: Colors.white,
-                  onPressed: _isLoading ? null : _handleLogin,
+                  onPressed: isLoading ? null : _handleLogin,
                 ),
               ],
             ),
