@@ -20,16 +20,16 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           theme: ThemeData(
-             useMaterial3: false,
-            fontFamily: FontConstants.fontFamilyBebasNeue,
+            useMaterial3: false,
+            // fontFamily: FontConstants.fontFamilyBebasNeue,
             pageTransitionsTheme: PageTransitionsTheme(
-    builders: {
-      TargetPlatform.android: CupertinoPageTransitionsBuilder(), 
-      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-    },
-  ),
-            scaffoldBackgroundColor:  Color(0xFF121212),
-    canvasColor: Color(0xFF121212), 
+              builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              },
+            ),
+            scaffoldBackgroundColor: Color(0xFF121212),
+            canvasColor: Color(0xFF121212),
           ),
           debugShowCheckedModeBanner: false,
           //     theme: ThemeData(
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           // home: MainLayout(),
           themeMode: ThemeMode.system,
           onGenerateRoute: AppRouter.generateRoute,
-          initialRoute: RouteName.loadingScreenRoute,
+          initialRoute: RouteName.signinScreenRoute,
         );
       },
     );
