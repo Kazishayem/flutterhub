@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterhub/core/resource/constansts/color_manger.dart';
 import 'package:flutterhub/core/resource/style_manager.dart';
+
 class PrimaryButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
@@ -22,6 +23,8 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: padding ?? EdgeInsets.symmetric(horizontal: 4.w),
       child: SizedBox(
@@ -47,7 +50,7 @@ class PrimaryButton extends StatelessWidget {
                 style ??
                 getMedium500Style18(
                   fontSize: 18.sp,
-                  color: textColor ?? ColorManager.whiteColor,
+                  color: textColor ?? theme.colorScheme.onPrimary,
                 ),
           ),
         ),

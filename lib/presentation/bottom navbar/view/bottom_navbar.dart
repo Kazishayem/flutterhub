@@ -18,7 +18,7 @@ class BottomNavbar extends ConsumerWidget {
     final pages = const [ProductScreen(), PostScreen(), SettingScreen()];
 
     return Scaffold(
-      backgroundColor: ColorManager.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: pages[selectedPage],
       bottomNavigationBar: SafeArea(
         child: Padding(

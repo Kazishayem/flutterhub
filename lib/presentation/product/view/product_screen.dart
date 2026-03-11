@@ -45,7 +45,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
     final state = ref.watch(productViewModelProvider);
 
     return Scaffold(
-      backgroundColor: ColorManager.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -57,7 +57,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w700,
-                  color: ColorManager.blackColor,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 12.h),
@@ -106,8 +106,11 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
         state.isPaginationLoading || state.paginationError != null;
 
     return RefreshIndicator(
-      onRefresh: () =>
-          ref.read(productViewModelProvider.notifier).fetchInitialProducts(),
+      onRefresh:
+          () =>
+              ref
+                  .read(productViewModelProvider.notifier)
+                  .fetchInitialProducts(),
       child: ListView.separated(
         controller: _scrollController,
         itemCount: state.products.length + (showFooter ? 1 : 0),
@@ -171,7 +174,7 @@ class _ProductCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: ColorManager.containerColor,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -220,7 +223,10 @@ class _ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right),
+            Icon(
+              Icons.chevron_right,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ],
         ),
       ),
@@ -236,7 +242,7 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorManager.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: const Text('Product Details')),
       body: SingleChildScrollView(
         child: Padding(
@@ -251,12 +257,13 @@ class ProductDetailScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 240,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    height: 240,
-                    color: Colors.grey.shade300,
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.broken_image, size: 40),
-                  ),
+                  errorBuilder:
+                      (_, __, ___) => Container(
+                        height: 240,
+                        color: Colors.grey.shade300,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.broken_image, size: 40),
+                      ),
                 ),
               ),
               const SizedBox(height: 16),

@@ -78,7 +78,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
     final isLoading = ref.watch(signinLoadingProvider);
 
     return Scaffold(
-      backgroundColor: ColorManager.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -91,7 +91,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                   'Login',
                   style: getBold700Style28(
                     fontSize: 28.sp,
-                    color: ColorManager.blackColor,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -102,7 +102,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                     'Username',
                     style: getMedium500Style16(
                       fontSize: 16.sp,
-                      color: ColorManager.blackColor,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -119,7 +119,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                     'Password',
                     style: getMedium500Style16(
                       fontSize: 16.sp,
-                      color: ColorManager.blackColor,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),

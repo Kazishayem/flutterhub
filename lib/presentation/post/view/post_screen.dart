@@ -45,7 +45,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     final state = ref.watch(postViewModelProvider);
 
     return Scaffold(
-      backgroundColor: ColorManager.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -57,7 +57,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w700,
-                  color: ColorManager.blackColor,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 12.h),
@@ -104,8 +104,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         state.isPaginationLoading || state.paginationError != null;
 
     return RefreshIndicator(
-      onRefresh: () =>
-          ref.read(postViewModelProvider.notifier).fetchInitialPosts(),
+      onRefresh:
+          () => ref.read(postViewModelProvider.notifier).fetchInitialPosts(),
       child: ListView.separated(
         controller: _scrollController,
         itemCount: state.posts.length + (showFooter ? 1 : 0),
@@ -166,7 +166,7 @@ class _PostCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: ColorManager.containerColor,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -198,7 +198,7 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorManager.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: const Text('Post Details')),
       body: Padding(
         padding: const EdgeInsets.all(16),

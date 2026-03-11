@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreferenceData {
   static const String _tokenKey = 'auth_token';
   static const String _userDataKey = 'user_data';
+  static const String _themeModeKey = 'theme_mode';
 
   static Future<void> setToken(String? token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -42,6 +43,16 @@ class SharedPreferenceData {
   static Future<void> removeUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userDataKey);
+  }
+
+  static Future<void> setThemeMode(String mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_themeModeKey, mode);
+  }
+
+  static Future<String?> getThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_themeModeKey);
   }
 
   static Future<bool> hasSession() async {
