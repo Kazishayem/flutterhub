@@ -1,19 +1,59 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceData {
-static Future<void> setToken(String? token) async {
+  static const String _tokenKey = 'auth_token';
+  static const String _userDataKey = 'user_data';
+
+  static Future<void> setToken(String? token) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('auth_token', "$token");
+    if (token == null || token.isEmpty) {
+      await prefs.remove(_tokenKey);
+      return;
+    }
+    await prefs.setString(_tokenKey, token);
   }
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('auth_token');
+    return prefs.getString(_tokenKey);
   }
 
   static Future<void> removeToken() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove('auth_token');
+    await prefs.remove(_tokenKey);
+  }
+
+  static Future<void> setUserData(Map<String, dynamic> userData) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userDataKey, jsonEncode(userData));
+  }
+
+  static Future<Map<String, dynamic>?> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = prefs.getString(_userDataKey);
+    if (userData == null || userData.isEmpty) {
+      return null;
+    }
+    return jsonDecode(userData) as Map<String, dynamic>;
+  }
+
+  static Future<void> removeUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_userDataKey);
+  }
+
+  static Future<bool> hasSession() async {
+    final token = await getToken();
+    final user = await getUserData();
+    return token != null && token.isNotEmpty && user != null;
+  }
+
+  static Future<void> clearSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+    await prefs.remove(_userDataKey);
   }
 
   static Future<String?> getRole() async {
@@ -23,15 +63,14 @@ static Future<void> setToken(String? token) async {
 
   Future<void> setRole(String? role) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('role', "$role");
+    await prefs.setString('role', "$role");
   }
 
   static Future<void> removeRole() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove('role');
+    await prefs.remove('role');
   }
 
-  // EMAIL
   Future<String?> getEmailId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('email');
@@ -39,11 +78,11 @@ static Future<void> setToken(String? token) async {
 
   Future<void> setEmailId(String? id) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('email', id ?? "No email_id");
+    await prefs.setString('email', id ?? 'No email_id');
   }
 
   Future<void> removeEmailId() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove('email');
+    await prefs.remove('email');
   }
 }

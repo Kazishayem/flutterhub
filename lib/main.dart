@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutterhub/core/resource/font_manager.dart';
+
 import 'core/route/route_import_part.dart';
+import 'core/network/api_clients.dart';
 import 'core/route/route_name.dart';
+import 'data/sources/local/shared_preference/shared_preference.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: MyApp()));
+  final bool hasSession = await SharedPreferenceData.hasSession();
+
+  if (hasSession) {
+    final token = await SharedPreferenceData.getToken();
+    await ApiClient.headerSet(token);
+  }
+
+  runApp(ProviderScope(child: MyApp(hasSession: hasSession)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasSession;
+
+  const MyApp({super.key, required this.hasSession});
 
   @override
   Widget build(BuildContext context) {
@@ -21,26 +32,23 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           theme: ThemeData(
             useMaterial3: false,
-            // fontFamily: FontConstants.fontFamilyBebasNeue,
-            pageTransitionsTheme: PageTransitionsTheme(
+            pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               },
             ),
-            scaffoldBackgroundColor: Color(0xFF121212),
-            canvasColor: Color(0xFF121212),
+            scaffoldBackgroundColor: const Color(0xFF121212),
+            canvasColor: const Color(0xFF121212),
           ),
           debugShowCheckedModeBanner: false,
-          //     theme: ThemeData(
-          //   useMaterial3: false,
-          //   fontFamily: FontConstants.fontFamilyBebasNeue,
-          // ),
           title: 'Iron Ready',
-          // home: MainLayout(),
           themeMode: ThemeMode.system,
           onGenerateRoute: AppRouter.generateRoute,
-          initialRoute: RouteName.signinScreenRoute,
+          initialRoute:
+              hasSession
+                  ? RouteName.bottomNavbarnRoute
+                  : RouteName.signinScreenRoute,
         );
       },
     );
