@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterhub/core/resource/constansts/color_manger.dart';
-import 'package:flutterhub/data/models/post_model.dart';
+import 'package:flutterhub/presentation/post/view/widget/post_card.dart';
 import 'package:flutterhub/presentation/post/viewmodel/post_viewmodel.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
@@ -104,8 +104,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         state.isPaginationLoading || state.paginationError != null;
 
     return RefreshIndicator(
-      onRefresh:
-          () => ref.read(postViewModelProvider.notifier).fetchInitialPosts(),
+      onRefresh: () =>
+          ref.read(postViewModelProvider.notifier).fetchInitialPosts(),
       child: ListView.separated(
         controller: _scrollController,
         itemCount: state.posts.length + (showFooter ? 1 : 0),
@@ -141,85 +141,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           }
 
           final post = state.posts[index];
-          return _PostCard(post: post);
+          return PostCard(post: post);
         },
-      ),
-    );
-  }
-}
-
-class _PostCard extends StatelessWidget {
-  final PostModel post;
-
-  const _PostCard({required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => PostDetailScreen(post: post)));
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              post.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              post.preview,
-              style: const TextStyle(fontSize: 14, height: 1.4),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PostDetailScreen extends StatelessWidget {
-  final PostModel post;
-
-  const PostDetailScreen({super.key, required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(title: const Text('Post Details')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              post.title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 14),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Text(
-                  post.body,
-                  style: const TextStyle(fontSize: 15, height: 1.6),
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

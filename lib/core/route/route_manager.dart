@@ -24,9 +24,11 @@ class AppRouter {
 
       case RouteName.bottomNavbarnRoute:
         return MaterialPageRoute(builder: (_) => const BottomNavbar());
+
+        
        
 
-
+// /ProductDetailScreen
         // case RouteName.inclineBenchPressScreenRoute:
         // return MaterialPageRoute(builder: (_) => const InclineBenchPressScreen());
 
