@@ -3,6 +3,7 @@ class ApiEndpoints {
   static const String register = 'users';
   static const String login = 'auth/login';
   static const String products = 'products';
+  static const String posts = 'posts';
 
   static const String switchRole = 'api/auth/switch-role';
   static const String verifyMail = 'api/auth/verify-email';
